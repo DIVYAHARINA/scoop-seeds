@@ -15,25 +15,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
-    <style>
-        .shop-breadcrumb {
-            font-size: 0.88rem;
-            color: var(--sand);
-            margin-bottom: 12px;
-        }
-        .shop-breadcrumb a {
-            color: #fff;
-            text-decoration: none;
-            opacity: 0.8;
-        }
-        .shop-breadcrumb a:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
-    </style>
 </head>
 
 <body>
@@ -108,13 +92,13 @@
     <main id="top">
 
         <!-- Dedicated Shop Page Banner Section -->
-        <section class="hero dark" style="padding: 48px 0 40px 0;">
+        <section class="page-hero">
             <div class="wrap">
                 <div class="shop-breadcrumb">
                     <a href="../index.html">Home</a> &nbsp;/&nbsp; <span>Shop</span>
                 </div>
-                <h1 style="margin-bottom:12px">Shop All <span class="b">Protein Premixes.</span></h1>
-                <p class="hero-lead" style="max-width: 60ch; margin-bottom: 20px;">
+                <h1>Shop All <span class="b" style="color:var(--gold);font-style:italic">Protein Premixes.</span></h1>
+                <p class="lead">
                     Protein-rich oats, nuts, seeds &amp; clean protein premixes. 24.6g protein per 80g serving. Ready in minutes.
                 </p>
             </div>
@@ -124,7 +108,7 @@
         <section class="shop-products-section" id="shop">
             <div class="wrap center">
                 <h2 style="margin-bottom:8px">All Products</h2>
-                <p>Pick a single 80g pack at ₹159 (MRP ₹179), or save with the 3-pack combo at ₹399.</p>
+                <p class="lead" style="margin-bottom:32px">Pick a single 80g pack at ₹159 (MRP ₹179), or save with the 3-pack combo at ₹399.</p>
                 <div class="shop-toolbar">
                     <div class="sort-wrap">
                         <label for="sortSelect">Sort by:</label>
@@ -142,22 +126,24 @@
 
         <!-- Discovery Starter Bundle Section -->
         <section class="light" id="bundle">
-            <div class="wrap bundle">
-                <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1024,fit=crop/lCACfO20beddAweM/combo-of-3-pkt-DNfALjUrOCRAyvem.png"
-                    alt="Three-pack discovery box of Scoop &amp; Seeds premixes" loading="lazy">
-                <div>
-                    <p>Best Value Deal</p>
-                    <h2>Three-Flavor Starter Bundle</h2>
-                    <div class="deal-card">
-                        <h3>3-Pack Discovery Box</h3>
-                        <p style="margin:0">Get all three authentic flavors—Kulfi Masti, Magic Mango, and Banana
-                            Delight—in one complete value set for ₹349 with fast India dispatch.</p>
-                    </div>
-                    <button class="btn" data-add="combo">Get Bundle For ₹349</button>
-                    <div class="single">
-                        <h4>Single Pack Tryout</h4>
-                        <p class="small">Pick your favorite flavor individually at ₹179 per pack with flexible shipping
-                            options across major Indian cities.</p>
+            <div class="wrap">
+                <div class="bundle">
+                    <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1024,fit=crop/lCACfO20beddAweM/combo-of-3-pkt-DNfALjUrOCRAyvem.png"
+                        alt="Three-pack discovery box of Scoop &amp; Seeds premixes" loading="lazy">
+                    <div>
+                        <p>Best Value Deal</p>
+                        <h2>Three-Flavor Starter Bundle</h2>
+                        <div class="deal-card">
+                            <h3>3-Pack Discovery Box</h3>
+                            <p style="margin:0">Get all three authentic flavors—Kulfi Masti, Magic Mango, and Banana
+                                Delight—in one complete value set for ₹349 with fast India dispatch.</p>
+                        </div>
+                        <button class="btn" data-add="combo">Get Bundle For ₹349</button>
+                        <div class="single">
+                            <h4>Single Pack Tryout</h4>
+                            <p class="small">Pick your favorite flavor individually at ₹179 per pack with flexible shipping
+                                options across major Indian cities.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -165,10 +151,10 @@
 
         <!-- Flavors Breakdown Section -->
         <section class="light" id="flavors">
-            <div class="wrap">
+            <div class="wrap center">
                 <p class="kicker">Authentic Tastes</p>
                 <h2>Three Nostalgic Dessert Flavors</h2>
-                <p>Each single pack delivers 24g of protein ready in minutes prep format.</p>
+                <p class="lead">Each single pack delivers 24g of protein ready in minutes prep format.</p>
                 <div class="flavors">
                     <article>
                         <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=crop/lCACfO20beddAweM/c92inj-cZLiL1kPkdEP8l3Z.png"

@@ -277,7 +277,7 @@
         var autoSlideTimer = setInterval(function () {
             currentSlide++;
             updateCarousel();
-        }, 3000);
+        }, 3200);
 
         var carouselContainer = document.querySelector('.insta-carousel-container');
         if (carouselContainer) {
@@ -289,7 +289,7 @@
                 autoSlideTimer = setInterval(function () {
                     currentSlide++;
                     updateCarousel();
-                }, 3000);
+                }, 3200);
             });
         }
 
@@ -309,6 +309,22 @@
         }
 
         window.addEventListener('resize', updateCarousel);
+    }
+
+    // Scroll reveal observer
+    if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(function (el) {
+            observer.observe(el);
+        });
     }
 
     render();
