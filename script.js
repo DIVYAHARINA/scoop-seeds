@@ -5,10 +5,10 @@
     var WHATSAPP = '919311367564';
 
     var PRODUCTS = [
-        { id: 'kulfi', name: 'Kulfi Masti Premium Protein Premix', price: 179, img: IMG + '58b7a0d2-c16b-4c01-8018-5dd8aa41bbe7.png' },
-        { id: 'mango', name: 'Mango Magic Premium Protein Premix', price: 179, img: IMG + '06f83700-a582-4f9e-916a-74e39209d7e8.png' },
-        { id: 'banana', name: 'Banana Delight Premium Protein Premix', price: 179, img: IMG + '1029421e-8a98-4e58-b7f4-3abce864382b.png' },
-        { id: 'combo', name: '3-Pack Variety Combo Premium Protein Premix', price: 349, img: IMG + 'de3da0e3-ef99-48ef-8452-822df82d1282.png' }
+        { id: 'mango', name: 'Mango Magic Premium Protein Premix', price: 159, oldPrice: 179, badge: 'Best Seller', dateAdded: 4, img: IMG + '06f83700-a582-4f9e-916a-74e39209d7e8.png' },
+        { id: 'banana', name: 'Banana Delight Premium Protein Premix', price: 159, oldPrice: 179, badge: 'No Added Sugar', dateAdded: 3, img: IMG + '1029421e-8a98-4e58-b7f4-3abce864382b.png' },
+        { id: 'kulfi', name: 'Kulfi Masti Premium Protein Premix', price: 159, oldPrice: 179, badge: 'No Added Sugar', dateAdded: 2, img: IMG + '58b7a0d2-c16b-4c01-8018-5dd8aa41bbe7.png' },
+        { id: 'combo', name: '3-Pack Variety Combo Premium Protein Premix', price: 399, oldPrice: 477, badge: 'Best Seller', dateAdded: 1, img: IMG + 'de3da0e3-ef99-48ef-8452-822df82d1282.png' }
     ];
 
     var cart = {};
@@ -18,20 +18,49 @@
     var money = function (n) { return '₹' + n.toLocaleString('en-IN'); };
     var find = function (id) { return PRODUCTS.filter(function (p) { return p.id === id; })[0]; };
 
-    // Render shop
-    $('products').innerHTML = PRODUCTS.map(function (p) {
-        return '<article class="product">' +
-            '<div class="pic"><img src="' + p.img + '" alt="' + p.name + '" loading="lazy"></div>' +
-            '<h4>' + p.name + '</h4>' +
-            '<div class="price">' + money(p.price) + '</div>' +
-            '<button class="btn white" data-add="' + p.id + '">Add to bag</button>' +
-            '</article>';
-    }).join('');
+    function renderProductGrid(items) {
+        var container = $('products');
+        if (!container) return;
+        container.innerHTML = items.map(function (p) {
+            var badgeHtml = p.badge ? '<span class="product-badge">' + p.badge + '</span>' : '';
+            var priceHtml = p.oldPrice ? '<span class="old-price">₹' + p.oldPrice.toFixed(2) + '</span><span class="new-price">₹' + p.price.toFixed(2) + '</span>' : money(p.price);
+            return '<article class="product">' +
+                '<div class="pic">' + badgeHtml + '<img src="' + p.img + '" alt="' + p.name + '" loading="lazy"></div>' +
+                '<h4>' + p.name + '</h4>' +
+                '<div class="price">' + priceHtml + '</div>' +
+                '<button class="btn white" data-add="' + p.id + '">Add to bag</button>' +
+                '</article>';
+        }).join('');
+    }
+
+    function sortProducts(val) {
+        var items = PRODUCTS.slice();
+        if (val === 'price-low') {
+            items.sort(function (a, b) { return a.price - b.price; });
+        } else if (val === 'price-high') {
+            items.sort(function (a, b) { return b.price - a.price; });
+        } else if (val === 'recent') {
+            items.sort(function (a, b) { return b.dateAdded - a.dateAdded; });
+        }
+        return items;
+    }
+
+    // Initial render
+    renderProductGrid(PRODUCTS);
+
+    // Event listener for sort dropdown
+    var sortSelect = $('sortSelect');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function () {
+            renderProductGrid(sortProducts(this.value));
+        });
+    }
 
     function save() { try { localStorage.setItem('ss-cart', JSON.stringify(cart)); } catch (e) { } }
 
     function toast(msg) {
         var t = $('toast');
+        if (!t) return;
         t.textContent = msg;
         t.classList.add('show');
         clearTimeout(toast._t);
@@ -42,33 +71,44 @@
         var ids = Object.keys(cart).filter(function (id) { return cart[id] > 0 && find(id); });
         var count = 0, total = 0;
 
-        $('cartItems').innerHTML = ids.length ? ids.map(function (id) {
-            var p = find(id), q = cart[id];
-            count += q; total += q * p.price;
-            return '<div class="item">' +
-                '<img src="' + p.img + '" alt="">' +
-                '<div><div class="name">' + p.name + '</div>' +
-                '<div class="qty"><button data-dec="' + id + '" aria-label="Decrease quantity">−</button><span>' + q + '</span><button data-inc="' + id + '" aria-label="Increase quantity">+</button></div></div>' +
-                '<div class="line-price">' + money(q * p.price) + '</div>' +
-                '</div>';
-        }).join('') : '<div class="empty">Your bag is empty.<br>Add a flavour to get started.</div>';
+        if ($('cartItems')) {
+            $('cartItems').innerHTML = ids.length ? ids.map(function (id) {
+                var p = find(id), q = cart[id];
+                count += q; total += q * p.price;
+                return '<div class="item">' +
+                    '<img src="' + p.img + '" alt="">' +
+                    '<div><div class="name">' + p.name + '</div>' +
+                    '<div class="qty"><button data-dec="' + id + '" aria-label="Decrease quantity">−</button><span>' + q + '</span><button data-inc="' + id + '" aria-label="Increase quantity">+</button></div></div>' +
+                    '<div class="line-price">' + money(q * p.price) + '</div>' +
+                    '</div>';
+            }).join('') : '<div class="empty">Your bag is empty.<br>Add a flavour to get started.</div>';
+        }
 
-        $('subtotal').textContent = money(total);
-        $('checkout').disabled = !ids.length;
-        $('checkout').style.opacity = ids.length ? 1 : .5;
+        if ($('subtotal')) $('subtotal').textContent = money(total);
+        if ($('checkout')) {
+            $('checkout').disabled = !ids.length;
+            $('checkout').style.opacity = ids.length ? 1 : .5;
+        }
         var badge = $('cartCount');
-        badge.textContent = count;
-        badge.style.display = count ? 'flex' : 'none';
+        if (badge) {
+            badge.textContent = count;
+            badge.style.display = count ? 'flex' : 'none';
+        }
         save();
     }
 
+    // Initial cart render on load
+    render();
+
     function openCart() {
-        $('drawer').classList.add('open'); $('overlay').classList.add('open');
-        $('drawer').setAttribute('aria-hidden', 'false');
+        if ($('drawer')) $('drawer').classList.add('open');
+        if ($('overlay')) $('overlay').classList.add('open');
+        if ($('drawer')) $('drawer').setAttribute('aria-hidden', 'false');
     }
     function closeCart() {
-        $('drawer').classList.remove('open'); $('overlay').classList.remove('open');
-        $('drawer').setAttribute('aria-hidden', 'true');
+        if ($('drawer')) $('drawer').classList.remove('open');
+        if ($('overlay')) $('overlay').classList.remove('open');
+        if ($('drawer')) $('drawer').setAttribute('aria-hidden', 'true');
     }
 
     document.addEventListener('click', function (e) {
@@ -91,41 +131,47 @@
         }
     });
 
-    $('openCart').addEventListener('click', openCart);
-    $('closeCart').addEventListener('click', closeCart);
-    $('overlay').addEventListener('click', closeCart);
+    if ($('openCart')) $('openCart').addEventListener('click', openCart);
+    if ($('closeCart')) $('closeCart').addEventListener('click', closeCart);
+    if ($('overlay')) $('overlay').addEventListener('click', closeCart);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCart(); });
 
     // Checkout via WhatsApp
-    $('checkout').addEventListener('click', function () {
-        var lines = [], total = 0;
-        Object.keys(cart).forEach(function (id) {
-            var p = find(id); if (!p || !cart[id]) return;
-            lines.push('• ' + p.name + ' × ' + cart[id] + ' = ' + money(p.price * cart[id]));
-            total += p.price * cart[id];
+    if ($('checkout')) {
+        $('checkout').addEventListener('click', function () {
+            var lines = [], total = 0;
+            Object.keys(cart).forEach(function (id) {
+                var p = find(id); if (!p || !cart[id]) return;
+                lines.push('• ' + p.name + ' × ' + cart[id] + ' = ' + money(p.price * cart[id]));
+                total += p.price * cart[id];
+            });
+            if (!lines.length) return;
+            var msg = 'Hi Scoop & Seeds! I would like to order:\n' + lines.join('\n') + '\n\nSubtotal: ' + money(total) + '\n\nMy name and delivery address:';
+            window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
         });
-        if (!lines.length) return;
-        var msg = 'Hi Scoop & Seeds! I would like to order:\n' + lines.join('\n') + '\n\nSubtotal: ' + money(total) + '\n\nMy name and delivery address:';
-        window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
-    });
+    }
 
     // Mobile menu
     var burger = $('burger'), menu = $('menu');
-    burger.addEventListener('click', function () {
-        var open = menu.classList.toggle('open');
-        burger.setAttribute('aria-expanded', open);
-    });
-    menu.addEventListener('click', function (e) {
-        if (e.target.tagName === 'A') { menu.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); }
-    });
+    if (burger && menu) {
+        burger.addEventListener('click', function () {
+            var open = menu.classList.toggle('open');
+            burger.setAttribute('aria-expanded', open);
+        });
+        menu.addEventListener('click', function (e) {
+            if (e.target.tagName === 'A') { menu.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); }
+        });
+    }
 
     // Contact form -> opens the visitor's email app
-    $('contactForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        var f = e.target;
-        var body = 'Name: ' + f.name.value + '\nEmail: ' + f.email.value + '\n\n' + f.message.value;
-        window.location.href = 'mailto:scoopandseeds@gmail.com?subject=' + encodeURIComponent('Message from ' + f.name.value) + '&body=' + encodeURIComponent(body);
-    });
+    if ($('contactForm')) {
+        $('contactForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var f = e.target;
+            var body = 'Name: ' + f.name.value + '\nEmail: ' + f.email.value + '\n\n' + f.message.value;
+            window.location.href = 'mailto:scoopandseeds@gmail.com?subject=' + encodeURIComponent('Message from ' + f.name.value) + '&body=' + encodeURIComponent(body);
+        });
+    }
 
     // Instagram Feed Posts & Carousel Logic
     var INSTA_POSTS = [
@@ -179,18 +225,18 @@
         },
         {
             id: 7,
-            img: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=600&q=80',
-            likes: 76,
-            comments: 9,
-            caption: 'Post-workout fuel that tastes like a dessert treat! 💪',
+            img: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=crop/lCACfO20beddAweM/our-story-XmwVZsyAm4sx3lH2.jpg',
+            likes: 156,
+            comments: 28,
+            caption: 'Sampling session at Cult.fit Gym! 🏋️‍♂️ Fueling active routines with Scoop & Seeds.',
             type: 'Reel 📹'
         },
         {
             id: 8,
-            img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80',
-            likes: 89,
-            comments: 11,
-            caption: 'No new habits. No complicated routines. Clean protein only 🥣',
+            img: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=crop/lCACfO20beddAweM/778340492_18087218720290340_2546592537192364654_n-4YKAH1YgZnkP4iZo.jpg',
+            likes: 134,
+            comments: 21,
+            caption: 'Fresh strawberries, blueberries & 24.6g protein bowl 🍓 Ready in 3 mins!',
             type: 'Post 📷'
         }
     ];
