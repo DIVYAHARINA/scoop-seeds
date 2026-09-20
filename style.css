@@ -788,7 +788,7 @@ footer {
 
 .foot img {
     width: 150px;
-    margin-bottom: 14px;
+    margin: 0 auto 14px;
 }
 
 .foot h5 {
@@ -1737,6 +1737,10 @@ footer {
     gap: 16px;
     margin-bottom: 24px;
 }
+.contact-item p {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
 .contact-item .icon-box {
     width: 44px;
     height: 44px;
@@ -1893,13 +1897,29 @@ textarea.form-control {
 }
 @media (max-width: 960px) {
     .about-hero-grid,
-    .about-craft-grid {
+    .about-craft-grid,
+    .contact-grid {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: 32px;
     }
     .about-cta-box {
         flex-direction: column;
         text-align: center;
         padding: 36px 24px;
+    }
+    .contact-info-card,
+    .contact-form {
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .contact-item {
+        gap: 12px;
+    }
+    .contact-item .icon-box {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
     }
 }
