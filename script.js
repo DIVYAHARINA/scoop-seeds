@@ -28,7 +28,7 @@
                 '<div class="pic">' + badgeHtml + '<img src="' + p.img + '" alt="' + p.name + '" loading="lazy"></div>' +
                 '<h4>' + p.name + '</h4>' +
                 '<div class="price">' + priceHtml + '</div>' +
-                '<button class="btn white" data-add="' + p.id + '">Add to bag</button>' +
+                '<button class="btn primary" data-add="' + p.id + '">Add to bag</button>' +
                 '</article>';
         }).join('');
     }
@@ -94,6 +94,11 @@
             badge.textContent = count;
             badge.style.display = count ? 'flex' : 'none';
         }
+        var badgeMobile = $('cartCountMobile');
+        if (badgeMobile) {
+            badgeMobile.textContent = count;
+            badgeMobile.style.display = count ? 'flex' : 'none';
+        }
         save();
     }
 
@@ -132,6 +137,7 @@
     });
 
     if ($('openCart')) $('openCart').addEventListener('click', openCart);
+    if ($('openCartMobile')) $('openCartMobile').addEventListener('click', openCart);
     if ($('closeCart')) $('closeCart').addEventListener('click', closeCart);
     if ($('overlay')) $('overlay').addEventListener('click', closeCart);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCart(); });
