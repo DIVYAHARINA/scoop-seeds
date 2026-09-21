@@ -215,14 +215,6 @@
         },
         {
             id: 5,
-            img: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1024,fit=crop/lCACfO20beddAweM/1000176363-p31gWfteTJ7EB0k4.png',
-            likes: 142,
-            comments: 24,
-            caption: 'Meet the founders: Vanita & Pooja 💚 Making everyday food do more for you.',
-            type: 'Post 📷'
-        },
-        {
-            id: 6,
             img: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1024,fit=crop/lCACfO20beddAweM/combo-of-3-pkt-DNfALjUrOCRAyvem.png',
             likes: 98,
             comments: 14,
@@ -230,7 +222,7 @@
             type: 'Carousel 📑'
         },
         {
-            id: 7,
+            id: 6,
             img: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=crop/lCACfO20beddAweM/our-story-XmwVZsyAm4sx3lH2.jpg',
             likes: 156,
             comments: 28,
@@ -238,12 +230,36 @@
             type: 'Reel 📹'
         },
         {
-            id: 8,
+            id: 7,
             img: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=crop/lCACfO20beddAweM/778340492_18087218720290340_2546592537192364654_n-4YKAH1YgZnkP4iZo.jpg',
             likes: 134,
             comments: 21,
             caption: 'Fresh strawberries, blueberries & 24.6g protein bowl 🍓 Ready in 3 mins!',
             type: 'Post 📷'
+        },
+        {
+            id: 8,
+            img: 'images/prep-oats-bowl.png',
+            likes: 175,
+            comments: 23,
+            caption: 'Quick prep oats bowl loaded with seeds & nuts 🥣 24.6g protein ready in minutes.',
+            type: 'Post 📷'
+        },
+        {
+            id: 9,
+            img: 'images/story-1.jpg',
+            likes: 148,
+            comments: 17,
+            caption: 'Starting the day right with high-protein dessert premix ✨ No added sugar!',
+            type: 'Reel 📹'
+        },
+        {
+            id: 10,
+            img: 'images/story-2.jpg',
+            likes: 162,
+            comments: 20,
+            caption: 'Authentic Indian sweet-shop taste meets modern 24g protein nutrition 🍨',
+            type: 'Carousel 📑'
         }
     ];
 
@@ -263,7 +279,7 @@
         var currentSlide = 0;
         function getVisibleCards() {
             var w = window.innerWidth;
-            if (w <= 560) return 1;
+            if (w <= 768) return 1;
             if (w <= 960) return 2;
             return 4;
         }
@@ -274,29 +290,58 @@
             if (currentSlide > maxSlide) currentSlide = 0;
             if (currentSlide < 0) currentSlide = maxSlide;
 
-            var cardWidth = instaTrack.children[0] ? instaTrack.children[0].offsetWidth : 270;
-            var gap = 18;
+            var cardWidth = (instaTrack.children[0]) ? instaTrack.children[0].getBoundingClientRect().width : instaTrack.offsetWidth;
+            var gap = (window.innerWidth <= 768) ? 0 : 18;
             var shift = currentSlide * (cardWidth + gap);
             instaTrack.style.transform = 'translateX(-' + shift + 'px)';
         }
 
-        var autoSlideTimer = setInterval(function () {
-            currentSlide++;
-            updateCarousel();
-        }, 3200);
+        var autoSlideTimer = null;
+        function startAutoSlide() {
+            stopAutoSlide();
+            autoSlideTimer = setInterval(function () {
+                currentSlide++;
+                updateCarousel();
+            }, 2500);
+        }
+
+        function stopAutoSlide() {
+            if (autoSlideTimer) {
+                clearInterval(autoSlideTimer);
+                autoSlideTimer = null;
+            }
+        }
+
+        // Start auto slide automatically on load
+        startAutoSlide();
 
         var carouselContainer = document.querySelector('.insta-carousel-container');
         if (carouselContainer) {
-            carouselContainer.addEventListener('mouseenter', function () {
-                clearInterval(autoSlideTimer);
-            });
-            carouselContainer.addEventListener('mouseleave', function () {
-                clearInterval(autoSlideTimer);
-                autoSlideTimer = setInterval(function () {
-                    currentSlide++;
-                    updateCarousel();
-                }, 3200);
-            });
+            carouselContainer.addEventListener('mouseenter', stopAutoSlide);
+            carouselContainer.addEventListener('mouseleave', startAutoSlide);
+
+            var touchStartX = 0;
+            var touchEndX = 0;
+            carouselContainer.addEventListener('touchstart', function (e) {
+                if (e.changedTouches && e.changedTouches[0]) {
+                    touchStartX = e.changedTouches[0].screenX;
+                }
+                stopAutoSlide();
+            }, { passive: true });
+
+            carouselContainer.addEventListener('touchend', function (e) {
+                if (e.changedTouches && e.changedTouches[0]) {
+                    touchEndX = e.changedTouches[0].screenX;
+                    if (touchEndX < touchStartX - 40) {
+                        currentSlide++;
+                        updateCarousel();
+                    } else if (touchEndX > touchStartX + 40) {
+                        currentSlide--;
+                        updateCarousel();
+                    }
+                }
+                startAutoSlide();
+            }, { passive: true });
         }
 
         var prevBtn = $('instaPrev');
@@ -305,12 +350,14 @@
             prevBtn.addEventListener('click', function () {
                 currentSlide--;
                 updateCarousel();
+                startAutoSlide();
             });
         }
         if (nextBtn) {
             nextBtn.addEventListener('click', function () {
                 currentSlide++;
                 updateCarousel();
+                startAutoSlide();
             });
         }
 
